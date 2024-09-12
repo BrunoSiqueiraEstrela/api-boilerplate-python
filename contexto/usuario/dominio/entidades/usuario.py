@@ -1,4 +1,6 @@
+from dataclasses import dataclass
 from datetime import datetime
+import uuid
 from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso, UsuarioID
 from libs.dominio.entidade import Entidade
 
@@ -14,8 +16,9 @@ from libs.dominio.entidade import Entidade
 # - deletado_em
 
 
+@dataclass
 class Usuario(Entidade):
-    id: ID
+    id: UsuarioID
     nome: str
     email: str
     senha: str
@@ -27,10 +30,10 @@ class Usuario(Entidade):
 
     @classmethod
     def criar(
-        cls, id: ID, nome: str, email: str, senha: str, nivel_de_acesso: NivelDeAcesso
+        cls, nome: str, email: str, senha: str, nivel_de_acesso: NivelDeAcesso
     ) -> "Usuario":
         return cls(
-            id=id,
+            id=uuid.uuid4(),
             nome=nome,
             email=email,
             senha=senha,
