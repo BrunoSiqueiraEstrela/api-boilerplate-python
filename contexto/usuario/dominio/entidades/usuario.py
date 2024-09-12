@@ -1,7 +1,6 @@
 from datetime import datetime
-from enum import Enum
+from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso, UsuarioID
 from libs.dominio.entidade import Entidade
-from libs.tipos.uuid import ID
 
 # Usuario:
 # - id
@@ -13,11 +12,6 @@ from libs.tipos.uuid import ID
 # - criado_em
 # - atualizado_em
 # - deletado_em
-
-
-class NivelDeAcesso(Enum):
-    ADMINISTRADOR = "ADMINISTRADOR"
-    USUARIO = "USUARIO"
 
 
 class Usuario(Entidade):
