@@ -1,1 +1,0 @@
-# Config inicial para testes
