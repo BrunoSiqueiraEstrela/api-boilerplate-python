@@ -1,4 +1,4 @@
-import abc
+from abc import ABC
 
 
-class Entidade(abc.ABC): ...
+class Entidade(ABC): ...
