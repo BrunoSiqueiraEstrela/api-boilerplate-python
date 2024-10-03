@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-import uuid
+from uuid import uuid4, UUID
 from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso, UsuarioID
 from libs.dominio.entidade import Entidade
 
@@ -18,7 +18,7 @@ from libs.dominio.entidade import Entidade
 
 @dataclass
 class Usuario(Entidade):
-    id: UsuarioID
+    id: UUID
     nome: str
     email: str
     senha: str
@@ -33,7 +33,7 @@ class Usuario(Entidade):
         cls, nome: str, email: str, senha: str, nivel_de_acesso: NivelDeAcesso
     ) -> "Usuario":
         return cls(
-            id=uuid.uuid4(),
+            id=uuid4(),
             nome=nome,
             email=email,
             senha=senha,
@@ -43,6 +43,18 @@ class Usuario(Entidade):
             atualizado_em=datetime.now(),
             deletado_em=None,
         )
+
+    def atualizar(
+        self, nome: str, email: str, senha: str, nivel_de_acesso: NivelDeAcesso
+    ):
+        if nome:
+            self.nome = nome
+        if email:
+            self.email = email
+        if senha:
+            self.senha = senha
+        if nivel_de_acesso:
+            self.nivel_de_acesso = nivel_de_acesso
 
     def __repr__(self) -> str:
         return f"Usuario<(id={self.id}),(nome={self.nome})>"
