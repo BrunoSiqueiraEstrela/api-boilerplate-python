@@ -32,9 +32,9 @@ class Barramento:
             self.eventos[evento] = []
             self.eventos[evento].append(callback)
 
-    def enviar_comando(self, comando: Comando, unidadeDeTrabalho: UnidadeDeTrabalho):
-        return self.comandos[comando.__class__](comando, unidadeDeTrabalho)
+    def enviar_comando(self, comando: Comando, uow: UnidadeDeTrabalho):
+        return self.comandos[comando.__class__](comando, uow)
 
-    def enviar_evento(self, evento: Evento, unidadeDeTrabalho: UnidadeDeTrabalho):
+    def enviar_evento(self, evento: Evento, uow: UnidadeDeTrabalho):
         for callback in self.eventos[evento.__class__]:
-            callback(evento, unidadeDeTrabalho)
+            callback(evento, uow)
