@@ -1,21 +1,9 @@
 from dataclasses import dataclass
-from sqlalchemy.orm.session import Session, sessionmaker
+from sqlalchemy.orm.session import Session
 from typing import Any, Optional, Self
-from sqlalchemy import create_engine, Engine, text
+from sqlalchemy import text
 
-
-from libs.variaveis.gerenciador_de_env import ENVS
-
-
-### REFAZER
-def conectar():
-
-    engine: Engine = create_engine(
-        ENVS.DB_STRING_CONNECTION, isolation_level="AUTOCOMMIT"
-    )
-    _session = sessionmaker(bind=engine, expire_on_commit=False)
-
-    return _session()
+from libs.database.config import conectar
 
 
 @dataclass
