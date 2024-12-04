@@ -23,17 +23,17 @@ from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
 from libs.tipos.retorno import RetornoApenasId, RetornoDeDados
 
 
-rota = APIRouter(tags=["Usuario"])
+rota = APIRouter(tags=["Usuarios"])
 
 
 # GET USUARIO
 @rota.get("/usuario/one/{id}", status_code=200)
 def obter_usuario(id: UUID) -> RetornoDeDados[SaidaUsuario]:
     unidadeDeTrabalho = UnidadeDeTrabalho()
-    barrramento = Barramento()
+    barramento = Barramento()
 
     comando = ObterUsuario(id=id)
-    retorno_comando: Usuario = barrramento.enviar_comando(comando, unidadeDeTrabalho)
+    retorno_comando: Usuario = barramento.enviar_comando(comando, unidadeDeTrabalho)
 
     return RetornoDeDados(
         dado=SaidaUsuario(
