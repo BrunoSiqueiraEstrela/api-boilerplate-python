@@ -3,7 +3,18 @@ from dataclasses import dataclass
 from fastapi import HTTPException
 
 
-# TODO: ADD resto erros
+@dataclass
+class EmailInvalido(HTTPException):
+    status_code: int = 400
+    detail: str = "Email inválido"
+
+
+@dataclass
+class UsuarioComMesmoEmail(HTTPException):
+    status_code: int = 400
+    detail: str = "Já existe um usuário com esse nome"
+
+
 @dataclass
 class UsuarioComMesmoNome(HTTPException):
     status_code: int = 400

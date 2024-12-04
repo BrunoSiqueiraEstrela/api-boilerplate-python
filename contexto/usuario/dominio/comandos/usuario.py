@@ -1,4 +1,5 @@
 from pydantic import EmailStr
+from typing import Optional
 from uuid import UUID
 
 from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
@@ -9,23 +10,47 @@ class CriarUsuario(Comando):
     nome: str
     email: EmailStr
     senha: str
-    nivel_de_acesso: NivelDeAcesso
 
 
 class AtualizarUsuario(Comando):
     id: UUID
-    nome: str
-    email: EmailStr
-    senha: str
-    nivel_de_acesso: NivelDeAcesso
+    nome: Optional[str] = None
+    email: Optional[EmailStr] = None
+    senha: Optional[str] = None
+
+
+class ObterPerfilUsuario(Comando):
+    id_usuario: UUID
 
 
 class ObterUsuario(Comando):
-    id: UUID
+    id_admin: UUID
+    id_usuario: UUID
 
 
-class ListarUsuarios(Comando): ...
+class ListarUsuarios(Comando):
+    id_admin: UUID
 
 
 class DeletarUsuario(Comando):
-    id: UUID
+    id_usuario: UUID
+    id_admin: UUID
+
+
+class LoginUsuario(Comando):
+    email: EmailStr
+    senha: str
+
+
+class LogoutUsuario(Comando):
+    token: str
+
+
+class ObterUsuarioLogado(Comando):
+    id_usuario: UUID
+
+
+class AtualizarNivelDeAcesso(Comando):
+    id_usuario: UUID
+    id_admin: UUID
+    nivel_de_acesso: NivelDeAcesso

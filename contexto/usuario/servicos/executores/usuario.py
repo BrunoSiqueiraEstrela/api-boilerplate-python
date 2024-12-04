@@ -1,44 +1,60 @@
+from datetime import datetime
 from contexto.usuario.dominio.comandos.usuario import (
+    AtualizarNivelDeAcesso,
     AtualizarUsuario,
     CriarUsuario,
     DeletarUsuario,
+    LoginUsuario,
 )
 from contexto.usuario.dominio.entidades.usuario import Usuario
-from contexto.usuario.erros.usuario import ErroAoCriarUsuario, ErroAoDeletarUsuario
-from contexto.usuario.repositorios.repo.usuario import RepositorioDoUsuario
+from contexto.usuario.dominio.modelos.usuario import Token
+from contexto.usuario.erros.usuario import (
+    ErroAoAtualizarUsuario,
+    ErroAoCriarUsuario,
+    ErroAoDeletarUsuario,
+)
+from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
+from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
+from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
 
 
-def criar_usuario(comando: CriarUsuario, unidadeDeTrabalho: UnidadeDeTrabalho):
+# USUARIO
+def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalho):
+
     usuario = Usuario.criar(
         nome=comando.nome,
         email=comando.email,
         senha=comando.senha,
-        nivel_de_acesso=comando.nivel_de_acesso,
+        nivel_de_acesso=NivelDeAcesso.USUARIO,
     )
 
-    with unidadeDeTrabalho:
-        repositorio = RepositorioDoUsuario(unidadeDeTrabalho.session)
+    usuario.senha = gerar_hash_da_senha(usuario.senha)
 
-        try:
-            repositorio.salvar(usuario)
-            unidadeDeTrabalho.commit()
+    with uow:
+        repositorio = RepositorioUsuario(uow.session)
 
-        except Exception as error:
-            unidadeDeTrabalho.rollback()
-            msg = f"Erro ao criar usuário: {str(error)}"
-            raise ErroAoCriarUsuario(detail=msg, status_code=500)
+        email_existe = repositorio.buscar_por_email(usuario.email)
+
+        if email_existe:
+            raise ErroAoCriarUsuario(detail="Email já cadastrado", status_code=400)
+
+        repositorio.salvar(usuario)
+        uow.commit()
 
     return usuario
 
 
-def atualizar_usuario(comando: AtualizarUsuario, unidadeDeTrabalho: UnidadeDeTrabalho):
+def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalho):
 
-    with unidadeDeTrabalho:
+    if comando.senha:
+        comando.senha = gerar_hash_da_senha(comando.senha)
 
-        repositorio = RepositorioDoUsuario(unidadeDeTrabalho.session)
+    with uow:
 
-        usuario = repositorio.buscar_por_id(comando.id)
+        repositorio = RepositorioUsuario(uow.session)
+
+        usuario: Usuario | None = repositorio.buscar_por_id(comando.id)
 
         if not usuario:
             raise ErroAoCriarUsuario(detail="Usuário não encontrado", status_code=404)
@@ -47,39 +63,97 @@ def atualizar_usuario(comando: AtualizarUsuario, unidadeDeTrabalho: UnidadeDeTra
             nome=comando.nome,
             email=comando.email,
             senha=comando.senha,
-            nivel_de_acesso=comando.nivel_de_acesso,
         )
 
-        try:
-            repositorio.salvar(usuario)
-            unidadeDeTrabalho.commit()
-
-        except Exception as error:
-            unidadeDeTrabalho.rollback()
-            msg = f"Erro ao atualizar usuário: {str(error)}"
-            raise ErroAoCriarUsuario(detail=msg, status_code=500)
+        repositorio.atualizar(usuario)
+        uow.commit()
 
     return usuario
 
 
-def deletar_usuario(comando: DeletarUsuario, unidadeDeTrabalho: UnidadeDeTrabalho):
+# AUTH
+def login_de_usuario(comando: LoginUsuario, uow: UnidadeDeTrabalho):
 
-    with unidadeDeTrabalho:
+    with uow:
 
-        repositorio = RepositorioDoUsuario(unidadeDeTrabalho.session)
+        repositorio = RepositorioUsuario(uow.session)
 
-        usuario = repositorio.buscar_por_id(comando.id)
+        usuario = repositorio.buscar_por_email(comando.email)
+
+        if not usuario:
+
+            raise ErroAoCriarUsuario(detail="Email ou senha Inválida", status_code=400)
+
+        if not usuario.verificar_senha(comando.senha):
+
+            raise ErroAoCriarUsuario(detail="Email ou senha Inválida", status_code=400)
+
+    token_criado = criar_token_de_acesso({"sub": usuario.id})
+
+    return Token(access_token=token_criado, token_type="bearer")
+
+
+# ADMIN
+def atualizar_nivel_de_acesso(comando: AtualizarNivelDeAcesso, uow: UnidadeDeTrabalho):
+
+    with uow:
+
+        repositorio = RepositorioUsuario(uow.session)
+
+        admin = repositorio.buscar_por_id(comando.id_admin)
+
+        if not admin:
+            raise ErroAoAtualizarUsuario(detail="Admin não encontrado", status_code=404)
+
+        if admin.nivel_de_acesso != NivelDeAcesso.ADMINISTRADOR:
+            raise ErroAoAtualizarUsuario(
+                detail="Usuário não autorizado", status_code=401
+            )
+
+        usuario = repositorio.buscar_por_id(comando.id_usuario)
+
+        if not usuario:
+            raise ErroAoAtualizarUsuario(
+                detail="Usuário não encontrado", status_code=404
+            )
+
+        usuario.nivel_de_acesso = comando.nivel_de_acesso
+
+        repositorio.atualizar(usuario)
+        uow.commit()
+
+    return usuario
+
+
+def deletar_usuario(comando: DeletarUsuario, uow: UnidadeDeTrabalho) -> Usuario:
+
+    with uow:
+
+        repositorio = RepositorioUsuario(uow.session)
+
+        admin: Usuario | None = repositorio.buscar_por_id(comando.id_admin)
+
+        if not admin:
+            raise ErroAoDeletarUsuario(detail="Admin não encontrado", status_code=404)
+
+        if admin.nivel_de_acesso != NivelDeAcesso.ADMINISTRADOR:
+            raise ErroAoDeletarUsuario(detail="Usuário não autorizado", status_code=401)
+
+        usuario: Usuario | None = repositorio.buscar_por_id(comando.id_usuario)
+
+        if usuario == admin:
+            raise ErroAoDeletarUsuario(
+                detail="Não é possível deletar o admin", status_code=401
+            )
 
         if not usuario:
             raise ErroAoDeletarUsuario(detail="Usuário não encontrado", status_code=404)
 
-        try:
-            repositorio.remover_por_softdelete(comando.id)
-            unidadeDeTrabalho.commit()
+        # Soft Delete
+        usuario.deletado_em = datetime.now()
+        usuario.desativar()
 
-        except Exception as error:
-            unidadeDeTrabalho.rollback()
-            msg = f"Erro ao deletar usuário: {str(error)}"
-            raise ErroAoDeletarUsuario(detail=msg, status_code=500)
+        repositorio.atualizar(comando.id_usuario)
+        uow.commit()
 
     return usuario

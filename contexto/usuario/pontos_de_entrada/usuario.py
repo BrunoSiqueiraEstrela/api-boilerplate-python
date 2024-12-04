@@ -1,12 +1,11 @@
-# TODO: Implementar rotas de usuário
-# CREATED USUARIO
-
-from typing import List
 from uuid import UUID
 from fastapi import APIRouter
-
+from fastapi.params import Depends
 from contexto.usuario.dominio.comandos.usuario import (
+    AtualizarNivelDeAcesso,
     CriarUsuario,
+    LoginUsuario,
+    ObterPerfilUsuario,
     ObterUsuario,
     ListarUsuarios,
     AtualizarUsuario,
@@ -14,26 +13,31 @@ from contexto.usuario.dominio.comandos.usuario import (
 )
 from contexto.usuario.dominio.entidades.usuario import Usuario
 from contexto.usuario.dominio.modelos.usuario import (
-    CriarUsuarioEntrada,
     AtualizarUsuarioEntrada,
+    CriarUsuarioEntrada,
+    EntradaAtualizarNivelDeAcesso,
+    LoginEntrada,
     SaidaUsuario,
+    Token,
 )
+
 from libs.dominio.barramento import Barramento
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
+from libs.fastapi.jwt import JWTBearer
 from libs.tipos.retorno import RetornoApenasId, RetornoDeDados
 
+rota = APIRouter(tags=["usuario"])
 
-rota = APIRouter(tags=["Usuarios"])
 
-
-# GET USUARIO
-@rota.get("/usuario/one/{id}", status_code=200)
-def obter_usuario(id: UUID) -> RetornoDeDados[SaidaUsuario]:
-    unidadeDeTrabalho = UnidadeDeTrabalho()
+@rota.get("/usuario/perfil/", status_code=200)
+def obter_usuario_logado(
+    usuario: Usuario = Depends(JWTBearer()),
+) -> RetornoDeDados[SaidaUsuario]:
+    uow = UnidadeDeTrabalho()
     barramento = Barramento()
 
-    comando = ObterUsuario(id=id)
-    retorno_comando: Usuario = barramento.enviar_comando(comando, unidadeDeTrabalho)
+    comando = ObterPerfilUsuario(id_usuario=usuario.id)
+    retorno_comando: Usuario = barramento.enviar_comando(comando, uow)
 
     return RetornoDeDados(
         dado=SaidaUsuario(
@@ -47,19 +51,100 @@ def obter_usuario(id: UUID) -> RetornoDeDados[SaidaUsuario]:
     )
 
 
-# QUERY USUARIO
-# LISTAR USUARIOS
-@rota.get("/usuario/listar/", status_code=200)
-def listar_usuarios() -> RetornoDeDados[List[SaidaUsuario]]:
-    unidadeDeTrabalho = UnidadeDeTrabalho()
-    barrramento = Barramento()
+@rota.post("/usuario", status_code=201)
+def criar_usuario(entrada: CriarUsuarioEntrada) -> RetornoApenasId[UUID]:
+    uow = UnidadeDeTrabalho()
+    barramento = Barramento()
 
-    comando = ListarUsuarios()
-    retorno_usuarios: List[Usuario] = barrramento.enviar_comando(
-        comando, unidadeDeTrabalho
+    comando = CriarUsuario(
+        nome=entrada.nome,
+        email=entrada.email,
+        senha=entrada.senha,
+    )
+    retorno_comando: Usuario = barramento.enviar_comando(comando, uow)
+
+    return RetornoApenasId(id=retorno_comando.id)
+
+
+@rota.put("/usuario", status_code=200)
+def atualizar_usuario(
+    entrada: AtualizarUsuarioEntrada, usuario: Usuario = Depends(JWTBearer())
+) -> RetornoApenasId[UUID]:
+    uow = UnidadeDeTrabalho()
+    barramento = Barramento()
+
+    comando = AtualizarUsuario(
+        id=usuario.id,
+        nome=entrada.nome,
+        email=entrada.email,
+        senha=entrada.senha,
+    )
+    retorno_comando: Usuario = barramento.enviar_comando(comando, uow)
+
+    return RetornoApenasId(id=retorno_comando.id)
+
+
+auth = APIRouter(tags=["auth"])
+
+
+# ERRO: EMAIL ESTA CASE SENSETIVE
+@auth.post("/login", status_code=200)
+def login(
+    entrada: LoginEntrada,
+) -> RetornoDeDados[Token]:
+    uow = UnidadeDeTrabalho()
+    barramento = Barramento()
+
+    comando = LoginUsuario(email=entrada.email, senha=entrada.senha)
+
+    retorno_comando: Token = barramento.enviar_comando(comando, uow)
+    return RetornoDeDados(dado=retorno_comando)
+
+
+# TODO: Implementar Logout
+# @auth.post("/logout", status_code=200)
+# def logout() -> None:
+#     return None
+# TODO: Implementar Refresh Token
+# @auth.post("/refresh", status_code=200)
+# def refresh() -> None:
+#     return None
+
+admin = APIRouter(tags=["admin"], prefix="/admin")
+
+
+@admin.get("/usuario/listar-um/{id}", status_code=200)
+def obter_usuario(
+    id: UUID, usuario: Usuario = Depends(JWTBearer())
+) -> RetornoDeDados[SaidaUsuario]:
+    uow = UnidadeDeTrabalho()
+    barramento = Barramento()
+
+    comando = ObterUsuario(id_usuario=id, id_admin=usuario.id)
+    retorno_comando: Usuario = barramento.enviar_comando(comando, uow)
+
+    return RetornoDeDados(
+        dado=SaidaUsuario(
+            id=retorno_comando.id,
+            nome=retorno_comando.nome,
+            email=retorno_comando.email,
+            nivel_de_acesso=retorno_comando.nivel_de_acesso,
+            criado_em=retorno_comando.criado_em,
+            atualizado_em=retorno_comando.atualizado_em,
+        )
     )
 
-    # retorna a lista de usuarios
+
+@admin.get("/usuario/listar-todos/", status_code=200)
+def listar_usuarios(
+    usuario: Usuario = Depends(JWTBearer()),
+) -> RetornoDeDados[list[SaidaUsuario]]:
+    uow = UnidadeDeTrabalho()
+    barrramento = Barramento()
+
+    comando = ListarUsuarios(id_admin=usuario.id)
+    retorno_usuarios: list[Usuario] = barrramento.enviar_comando(comando, uow)
+
     return RetornoDeDados(
         dado=[
             SaidaUsuario(
@@ -75,50 +160,32 @@ def listar_usuarios() -> RetornoDeDados[List[SaidaUsuario]]:
     )
 
 
-# POST USUARIO
-@rota.post("/usuario", status_code=201)
-def criar_usuario(entrada: CriarUsuarioEntrada) -> RetornoApenasId[UUID]:
-    unidadeDeTrabalho = UnidadeDeTrabalho()
-    barrramento = Barramento()
-
-    comando = CriarUsuario(
-        nome=entrada.nome,
-        email=entrada.email,
-        senha=entrada.senha,
-        nivel_de_acesso=entrada.nivel_de_acesso,
-    )
-    retorno_comando: Usuario = barrramento.enviar_comando(comando, unidadeDeTrabalho)
-
-    return RetornoApenasId(id=retorno_comando.id)
-
-
-# UPDATE USUARIO
-@rota.put("/usuario/{id}", status_code=200)
-def atualizar_usuario(
-    id: UUID, entrada: AtualizarUsuarioEntrada
+@admin.put("/usuario/nivel-de-acesso/{id}", status_code=200)
+def atualizar_nivel_de_acesso(
+    id: UUID,
+    entrada: EntradaAtualizarNivelDeAcesso,
+    usuario: Usuario = Depends(JWTBearer()),
 ) -> RetornoApenasId[UUID]:
-    unidadeDeTrabalho = UnidadeDeTrabalho()
+    uow = UnidadeDeTrabalho()
     barrramento = Barramento()
 
-    comando = AtualizarUsuario(
-        id=id,
-        nome=entrada.nome,
-        email=entrada.email,
-        senha=entrada.senha,
+    comando = AtualizarNivelDeAcesso(
+        id_usuario=id,
+        id_admin=usuario.id,
         nivel_de_acesso=entrada.nivel_de_acesso,
     )
-    retorno_comando: Usuario = barrramento.enviar_comando(comando, unidadeDeTrabalho)
+    retorno_comando: Usuario = barrramento.enviar_comando(comando, uow)
 
     return RetornoApenasId(id=retorno_comando.id)
 
 
-# DELETE USUARIO
-@rota.delete("/usuario/{id}", status_code=204)
-def deletar_usuario(id: UUID) -> None:
-    unidadeDeTrabalho = UnidadeDeTrabalho()
+@admin.delete("/usuario/{id}", status_code=204)
+def deletar_usuario(id: UUID, usuario: Usuario = Depends(JWTBearer())) -> None:
+    uow = UnidadeDeTrabalho()
     barrramento = Barramento()
 
-    comando = DeletarUsuario(id=id)
+    comando = DeletarUsuario(id_usuario=id, id_admin=usuario.id)
 
-    barrramento.enviar_comando(comando, unidadeDeTrabalho)
-    return None
+    retorno_comando: Usuario = barrramento.enviar_comando(comando, uow)
+
+    return RetornoApenasId(id=retorno_comando.id)
