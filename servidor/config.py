@@ -1,18 +1,23 @@
 import time
-
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 
-from fastapi.responses import RedirectResponse
 from libs.database.carregar_orm import carregar_tabelas
 from libs.dominio.barramento import Barramento
 
+app = FastAPI(title="API de Tarefas", version="0.0.1")
 
-app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-@app.get("/")
-async def docs():
-    return RedirectResponse(url="/docs")
+# @app.get("/")
+# async def docs():
+#    return RedirectResponse(url="/docs")
 
 
 ## Cadastrar middleware
@@ -27,8 +32,14 @@ async def add_tempo_de_resposta(request: Request, call_next):
 
 def registrar_rotas():
     from contexto.usuario.pontos_de_entrada.usuario import rota as usuario
+    from contexto.usuario.pontos_de_entrada.usuario import auth
+    from contexto.usuario.pontos_de_entrada.usuario import admin
+    from contexto.tarefa.pontos_de_entrada.tarefa import rota as tarefa
 
+    app.include_router(auth)
     app.include_router(usuario)
+    app.include_router(tarefa)
+    app.include_router(admin)
 
 
 def registrar_eventos_e_comandos():
@@ -38,10 +49,13 @@ def registrar_eventos_e_comandos():
         criar_usuario,
         atualizar_usuario,
         deletar_usuario,
+        login_de_usuario,
+        atualizar_nivel_de_acesso,
     )
     from contexto.usuario.servicos.visualizadores.usuario import (
         obter_usuario_por_id,
-        listar_usuarios,
+        listar_todos_usuarios,
+        obter_usuario_logado,
     )
 
     from contexto.usuario.dominio.comandos.usuario import (
@@ -50,14 +64,63 @@ def registrar_eventos_e_comandos():
         ObterUsuario,
         ListarUsuarios,
         DeletarUsuario,
+        LoginUsuario,
+        AtualizarNivelDeAcesso,
+        ObterPerfilUsuario,
+        ObterUsuarioLogado,
+    )
+    from contexto.tarefa.dominio.comandos.tarefa import (
+        AtualizarTarefa,
+        CriarTarefa,
+        DeletarTarefa,
+        BuscarTarefas,
+        BuscarTodasTarefasPorIdDoUsuario,
+        BuscarTarefaPorIdDeTarefa,
     )
 
+    from contexto.tarefa.servicos.executores.tarefa import (
+        atualizar_tarefa,
+        criar_tarefa,
+        deletar_tarefa,
+    )
+
+    from contexto.tarefa.servicos.visualizadores.tarefa import (
+        obter_tarefas_por_status,
+        obter_tarefas_por_id_do_usuario,
+        obter_tarefas_por_id,
+    )
+
+    # usuario
+    # executadores
     barramento.registrar_comando(CriarUsuario, criar_usuario)
     barramento.registrar_comando(AtualizarUsuario, atualizar_usuario)
     barramento.registrar_comando(DeletarUsuario, deletar_usuario)
+    barramento.registrar_comando(AtualizarNivelDeAcesso, atualizar_nivel_de_acesso)
 
+    # auth
+    barramento.registrar_comando(LoginUsuario, login_de_usuario)
+    barramento.registrar_comando(ObterUsuarioLogado, obter_usuario_logado)
+
+    # visualizadores
+    # VER USUARIO RANDOWM
     barramento.registrar_comando(ObterUsuario, obter_usuario_por_id)
-    barramento.registrar_comando(ListarUsuarios, listar_usuarios)
+    barramento.registrar_comando(ListarUsuarios, listar_todos_usuarios)
+    barramento.registrar_comando(ObterPerfilUsuario, obter_usuario_logado)
+
+    # tarefas
+    # executadores
+    barramento.registrar_comando(CriarTarefa, criar_tarefa)
+    barramento.registrar_comando(AtualizarTarefa, atualizar_tarefa)
+    barramento.registrar_comando(DeletarTarefa, deletar_tarefa)
+
+    # visualizadores
+    barramento.registrar_comando(BuscarTarefas, obter_tarefas_por_status)
+    # Buscar Tarefa por id E Usuario por id
+    barramento.registrar_comando(BuscarTarefaPorIdDeTarefa, obter_tarefas_por_id)
+    # Todas tarefas por id do usuario
+    barramento.registrar_comando(
+        BuscarTodasTarefasPorIdDoUsuario, obter_tarefas_por_id_do_usuario
+    )
 
 
 carregar_tabelas()
