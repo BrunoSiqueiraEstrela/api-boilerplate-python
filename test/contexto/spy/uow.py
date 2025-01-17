@@ -1,9 +1,7 @@
-from unittest.mock import MagicMock
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
+from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 
 
-class MockUoW(UnidadeDeTrabalho):
-
+class MockUoW(UnidadeDeTrabalhoAbastrato):
     def __init__(self):
         self.session = None
         self._committed = False
