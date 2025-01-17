@@ -1,14 +1,32 @@
+from abc import ABC
+from typing import Any, Optional, Self
 from dataclasses import dataclass
 from sqlalchemy.orm.session import Session
-from typing import Any, Optional, Self
 from sqlalchemy import text
 
 from libs.database.config import conectar
 
 
 @dataclass
-class UnidadeDeTrabalho:
+class UnidadeDeTrabalhoAbastrato(ABC):
+    def __enter__(self) -> Self:
+        pass
 
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def commit(self):
+        pass
+
+    def rollback(self):
+        pass
+
+    def adicionar(self, obj: Any):
+        pass
+
+
+@dataclass
+class UnidadeDeTrabalho(UnidadeDeTrabalhoAbastrato):
     schema: str = "public"
     session: Optional[Session] = None
 

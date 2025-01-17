@@ -14,14 +14,13 @@ from contexto.usuario.erros.usuario import (
     ErroAoDeletarUsuario,
 )
 from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
-from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
 from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
+from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
+from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
 
 
 # USUARIO
-def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalho):
-
+def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalhoAbastrato):
     usuario = Usuario.criar(
         nome=comando.nome,
         email=comando.email,
@@ -45,13 +44,11 @@ def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalho):
     return usuario
 
 
-def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalho):
-
+def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalhoAbastrato):
     if comando.senha:
         comando.senha = gerar_hash_da_senha(comando.senha)
 
     with uow:
-
         repositorio = RepositorioUsuario(uow.session)
 
         usuario: Usuario | None = repositorio.buscar_por_id(comando.id)
@@ -72,20 +69,16 @@ def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalho):
 
 
 # AUTH
-def login_de_usuario(comando: LoginUsuario, uow: UnidadeDeTrabalho):
-
+def login_de_usuario(comando: LoginUsuario, uow: UnidadeDeTrabalhoAbastrato):
     with uow:
-
         repositorio = RepositorioUsuario(uow.session)
 
         usuario = repositorio.buscar_por_email(comando.email)
 
         if not usuario:
-
             raise ErroAoCriarUsuario(detail="Email ou senha Inválida", status_code=400)
 
         if not usuario.verificar_senha(comando.senha):
-
             raise ErroAoCriarUsuario(detail="Email ou senha Inválida", status_code=400)
 
     token_criado = criar_token_de_acesso({"sub": usuario.id})
@@ -94,10 +87,10 @@ def login_de_usuario(comando: LoginUsuario, uow: UnidadeDeTrabalho):
 
 
 # ADMIN
-def atualizar_nivel_de_acesso(comando: AtualizarNivelDeAcesso, uow: UnidadeDeTrabalho):
-
+def atualizar_nivel_de_acesso(
+    comando: AtualizarNivelDeAcesso, uow: UnidadeDeTrabalhoAbastrato
+):
     with uow:
-
         repositorio = RepositorioUsuario(uow.session)
 
         admin = repositorio.buscar_por_id(comando.id_admin)
@@ -125,10 +118,10 @@ def atualizar_nivel_de_acesso(comando: AtualizarNivelDeAcesso, uow: UnidadeDeTra
     return usuario
 
 
-def deletar_usuario(comando: DeletarUsuario, uow: UnidadeDeTrabalho) -> Usuario:
-
+def deletar_usuario(
+    comando: DeletarUsuario, uow: UnidadeDeTrabalhoAbastrato
+) -> Usuario:
     with uow:
-
         repositorio = RepositorioUsuario(uow.session)
 
         admin: Usuario | None = repositorio.buscar_por_id(comando.id_admin)

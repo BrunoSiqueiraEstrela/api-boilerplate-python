@@ -1,5 +1,6 @@
 from typing import Optional
 
+from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 from contexto.tarefa.dominio.comandos.tarefa import (
     AtualizarTarefa,
     CriarTarefa,
@@ -10,13 +11,12 @@ from contexto.tarefa.erros.tarefa import (
     ErroAoCriarTarefa,
     ErroAoDeletarTarefa,
 )
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
 from contexto.tarefa.dominio.entidades.tarefa import Tarefa
 from contexto.tarefa.repositorios.repo.tarefa import RepositorioTarefas
 
 
 # TODO: Retornar ID apenas
-def criar_tarefa(comando: CriarTarefa, uow: UnidadeDeTrabalho):
+def criar_tarefa(comando: CriarTarefa, uow: UnidadeDeTrabalhoAbastrato):
     tarefa: Tarefa = Tarefa.criar(
         id_usuario=comando.id_usuario,
         titulo=comando.titulo,
@@ -43,7 +43,7 @@ def criar_tarefa(comando: CriarTarefa, uow: UnidadeDeTrabalho):
 
 
 def atualizar_tarefa(
-    comando: AtualizarTarefa, uow: UnidadeDeTrabalho
+    comando: AtualizarTarefa, uow: UnidadeDeTrabalhoAbastrato
 ) -> Optional[Tarefa]:
 
     with uow:
@@ -73,7 +73,7 @@ def atualizar_tarefa(
 
 
 # TODO: Retornar ID apenas
-def deletar_tarefa(comando: DeletarTarefa, uow: UnidadeDeTrabalho) -> None:
+def deletar_tarefa(comando: DeletarTarefa, uow: UnidadeDeTrabalhoAbastrato) -> None:
     with uow:
         repo = RepositorioTarefas(uow.session)
 

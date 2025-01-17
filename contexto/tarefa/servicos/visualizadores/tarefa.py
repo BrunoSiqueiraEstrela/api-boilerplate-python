@@ -4,13 +4,12 @@ from contexto.tarefa.dominio.comandos.tarefa import (
 )
 from contexto.tarefa.dominio.entidades.tarefa import Tarefa
 from contexto.tarefa.repositorios.repo.tarefa import RepositorioTarefas
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
+from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 
 
 def obter_tarefas_por_id(
-    comando: BuscarTarefaPorIdDeTarefa, uow: UnidadeDeTrabalho
+    comando: BuscarTarefaPorIdDeTarefa, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Tarefa]:
-
     with uow:
         repositorio = RepositorioTarefas(uow.session)
 
@@ -22,7 +21,7 @@ def obter_tarefas_por_id(
 
 
 def obter_tarefas_por_id_do_usuario(
-    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalho
+    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Tarefa]:
     with uow:
         repositorio = RepositorioTarefas(uow.session)
@@ -34,7 +33,7 @@ def obter_tarefas_por_id_do_usuario(
 
 
 def obter_tarefas_por_ordem_de_criacao(
-    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalho
+    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Tarefa]:
     with uow:
         repositorio = RepositorioTarefas(uow.session)
@@ -46,7 +45,7 @@ def obter_tarefas_por_ordem_de_criacao(
 
 
 def obter_tarefas_por_ordem_de_vencimento(
-    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalho
+    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Tarefa]:
     with uow:
         repositorio = RepositorioTarefas(uow.session)
@@ -58,7 +57,7 @@ def obter_tarefas_por_ordem_de_vencimento(
 
 
 def obter_tarefas_por_status(
-    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalho
+    comando: BuscarTodasTarefasPorIdDoUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Tarefa]:
     with uow:
         repositorio = RepositorioTarefas(uow.session)

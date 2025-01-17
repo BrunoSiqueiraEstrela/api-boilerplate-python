@@ -4,7 +4,7 @@ from contexto.usuario.dominio.entidades.usuario import Usuario
 from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
 from contexto.usuario.erros.usuario import ErroAoObterUsuario
 from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
+from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 from contexto.usuario.dominio.comandos.usuario import (
     ListarUsuarios,
     ObterPerfilUsuario,
@@ -13,7 +13,9 @@ from contexto.usuario.dominio.comandos.usuario import (
 
 
 # ADMIN
-def obter_usuario_por_id(comando: ObterUsuario, uow: UnidadeDeTrabalho) -> Usuario:
+def obter_usuario_por_id(
+    comando: ObterUsuario, uow: UnidadeDeTrabalhoAbastrato
+) -> Usuario:
     with uow:
         repositorio = RepositorioUsuario(uow.session)
 
@@ -35,7 +37,7 @@ def obter_usuario_por_id(comando: ObterUsuario, uow: UnidadeDeTrabalho) -> Usuar
 
 # TODO: ADD PAGINAÇÂO
 def listar_todos_usuarios(
-    comando: ListarUsuarios, uow: UnidadeDeTrabalho
+    comando: ListarUsuarios, uow: UnidadeDeTrabalhoAbastrato
 ) -> list[Usuario]:
     with uow:
         repositorio = RepositorioUsuario(uow.session)
@@ -55,7 +57,7 @@ def listar_todos_usuarios(
 
 # USUARIO
 def obter_usuario_logado(
-    comando: ObterPerfilUsuario, uow: UnidadeDeTrabalho
+    comando: ObterPerfilUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> Usuario:
     with uow:
         repositorio = RepositorioUsuario(uow.session)
