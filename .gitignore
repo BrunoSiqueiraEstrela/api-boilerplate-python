@@ -1,5 +1,5 @@
 .venv
 .env
 __pycache__
-.vscode
+.vscode/PythonImportHelper-v2-Completion.json
 .pytest_cache
