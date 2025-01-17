@@ -4,12 +4,11 @@ from sqlalchemy import Engine, MetaData, create_engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from libs.variaveis.gerenciador_de_env import ENVS
 
-registro_dos_orms: Final = registry()
+REGISTRO_DOS_ORMS: Final = registry()
 metadata = MetaData()
 
 
 def conectar() -> Session:
-
     engine: Engine = create_engine(
         ENVS.DB_STRING_CONNECTION, isolation_level="AUTOCOMMIT"
     )

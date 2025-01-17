@@ -1,6 +1,6 @@
 from contexto.tarefa.dominio.objeto_de_valor.tarefa import StatusDaTarefa
 from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from libs.database.config import registro_dos_orms
+from libs.database.config import REGISTRO_DOS_ORMS
 from sqlalchemy.types import Uuid, String, DateTime, Enum, Integer
 from sqlalchemy.schema import Column, Table, ForeignKeyConstraint
 from sqlalchemy.sql import func
@@ -9,7 +9,7 @@ from uuid import uuid4
 
 tabela_tarefa = Table(
     "Tarefa",
-    registro_dos_orms.metadata,
+    REGISTRO_DOS_ORMS.metadata,
     Column("id", Uuid(as_uuid=True), default=uuid4, primary_key=True, index=True),
     Column("id_usuario", Uuid(as_uuid=True), nullable=False, index=True),
     Column("titulo", String(100), nullable=False, index=True),
@@ -30,6 +30,6 @@ tabela_tarefa = Table(
     ForeignKeyConstraint(["id_usuario"], ["Usuario.id"]),
 )
 
-tabela_tarefa = registro_dos_orms.map_imperatively(
+tabela_tarefa = REGISTRO_DOS_ORMS.map_imperatively(
     Tarefa, tabela_tarefa, properties={"id": tabela_tarefa.c.id}
 )
