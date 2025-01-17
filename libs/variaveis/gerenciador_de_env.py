@@ -5,16 +5,13 @@ from pydantic import Field
 
 
 def pegar_caminho_do_arquivo_env():
-    return [
-        *Path().absolute().glob("**/*.env"),
-    ]
+    return Path(__file__).parent.parent.parent / ".env"
 
 
 print("Carregando ENV")
 
 
 class GerenciadorENV(BaseSettings):
-
     _instancia = None
 
     # .json
@@ -33,7 +30,7 @@ class GerenciadorENV(BaseSettings):
 
     # VIRTUAIS
     @property
-    def DB_STRING_CONNECTION(self):
+    def DB_STRING_CONNECTION(self) -> str:
         return f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_DATABASE}"
 
     @property
