@@ -1,12 +1,20 @@
+import sys
 from logging.config import fileConfig
+from pathlib import Path
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from libs.database.carregar_orm import carregar_tabelas
-from libs.database.config import registro_dos_orms
-from libs.variaveis.gerenciador_de_env import ENVS
+
+
+root = Path(__file__).parent.parent.parent.parent
+sys.path.append(str(root))
+
+
+from libs.database.carregar_orm import carregar_tabelas  # noqa: E402
+from libs.database.config import REGISTRO_DOS_ORMS  # noqa: E402
+from libs.variaveis.gerenciador_de_env import ENVS  # noqa: E402
 
 carregar_tabelas()
 
@@ -17,6 +25,7 @@ DB_PATH = ENVS.DB_STRING_CONNECTION
 # access to the values within the .ini file in use.
 config = context.config
 
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -26,7 +35,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = registro_dos_orms.metadata
+target_metadata = REGISTRO_DOS_ORMS.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
