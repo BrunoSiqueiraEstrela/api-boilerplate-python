@@ -1,10 +1,11 @@
+from uuid import uuid4
 from sqlalchemy.types import Uuid, String, DateTime, Boolean, Enum
 from sqlalchemy.schema import Column, Table
 from sqlalchemy.sql import func
-from uuid import uuid4
-from contexto.usuario.dominio.entidades.usuario import Usuario
+
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.database.config import REGISTRO_DOS_ORMS
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
 
 tabela_usuario = Table(
     "Usuario",

@@ -1,20 +1,20 @@
 from datetime import datetime
-from contexto.usuario.dominio.comandos.usuario import (
+from contexto.usuario.dominio.comandos.conta_de_usuario import (
     AtualizarNivelDeAcesso,
     AtualizarUsuario,
     CriarUsuario,
     DeletarUsuario,
     LoginUsuario,
 )
-from contexto.usuario.dominio.entidades.usuario import Usuario
-from contexto.usuario.dominio.modelos.usuario import Token
-from contexto.usuario.erros.usuario import (
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.usuario.dominio.modelos.conta_de_usuario import Token
+from contexto.usuario.erros.conta_de_usuario import (
     ErroAoAtualizarUsuario,
     ErroAoCriarUsuario,
     ErroAoDeletarUsuario,
 )
 from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
 

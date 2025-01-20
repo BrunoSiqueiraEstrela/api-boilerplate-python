@@ -1,7 +1,8 @@
 from uuid import UUID
 from fastapi import APIRouter
 from fastapi.params import Depends, Query
-from contexto.tarefa.dominio.comandos.tarefa import (
+
+from contexto.tarefa.dominio.comandos.gerencia_de_tarefa import (
     AtualizarTarefa,
     BuscarTarefas,
     BuscarTarefaPorIdDeTarefa,
@@ -9,18 +10,22 @@ from contexto.tarefa.dominio.comandos.tarefa import (
     CriarTarefa,
     DeletarTarefa,
 )
-from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from contexto.usuario.dominio.entidades.usuario import Usuario
-from libs.tipos.retorno import RetornoDeDados
-from contexto.tarefa.dominio.modelo.tarefa import (
+from contexto.tarefa.dominio.entidades.gerencia_de_tarefa import Tarefa
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.tarefa.dominio.modelo.gerencia_de_tarefa import (
     AtualizarTarefaEntrada,
     CriarTarefaEntrada,
     SaidaTarefa,
 )
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import (
+    OrdenarTarefa,
+    StatusDaTarefa,
+)
+
+from libs.tipos.retorno import RetornoDeDados
+from libs.fastapi.jwt import JWTBearer
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
 from libs.dominio.barramento import Barramento
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import OrdenarTarefa, StatusDaTarefa
-from libs.fastapi.jwt import JWTBearer
 
 rota = APIRouter(tags=["tarefa"], prefix="/tarefa")
 
@@ -64,7 +69,6 @@ def obter_tarefas_por_id(
 def obter_tarefas_por_id_do_usuario(
     usuario: Usuario = Depends(JWTBearer()),
 ) -> RetornoDeDados[list[SaidaTarefa]]:
-
     uow = UnidadeDeTrabalho()
     barramento = Barramento()
     comando = BuscarTodasTarefasPorIdDoUsuario(id_usuario=usuario.id)
@@ -160,7 +164,6 @@ def criar_tarefa(
 def atualizar_tarefa(
     entrada: AtualizarTarefaEntrada, usuario: Usuario = Depends(JWTBearer())
 ) -> RetornoDeDados[SaidaTarefa]:
-
     uow = UnidadeDeTrabalho()
     barramento = Barramento()
     comando = AtualizarTarefa(

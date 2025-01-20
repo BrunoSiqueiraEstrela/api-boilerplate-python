@@ -2,7 +2,7 @@ from typing import Optional
 from uuid import UUID
 from pydantic import EmailStr
 
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.dominio.comando import Comando
 
 

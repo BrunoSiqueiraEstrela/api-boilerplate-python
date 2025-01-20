@@ -1,13 +1,17 @@
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
+
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import (
+    OrdenarTarefa,
+    StatusDaTarefa,
+)
+
 from libs.fastapi.dto import Modelo
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import OrdenarTarefa, StatusDaTarefa
 
 
 # TODO: Add validação dos valores
 class CriarTarefaEntrada(Modelo):
-
     titulo: str
     descricao: str
     data_de_inicio: datetime
@@ -17,7 +21,6 @@ class CriarTarefaEntrada(Modelo):
 
 
 class SaidaTarefa(Modelo):
-
     id: UUID
     id_usuario: UUID
 
@@ -33,7 +36,6 @@ class SaidaTarefa(Modelo):
 
 # TODO: Add validação dos valores
 class AtualizarTarefaEntrada(Modelo):
-
     id: UUID
     titulo: Optional[str] = None
     descricao: Optional[str] = None
@@ -44,5 +46,4 @@ class AtualizarTarefaEntrada(Modelo):
 
 
 class OrdenarTarefaPor(Modelo):
-
     ordenador: OrdenarTarefa

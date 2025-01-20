@@ -1,16 +1,20 @@
-from sqlalchemy.orm import Session
-from typing import List, Optional
 from uuid import UUID
-from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import OrdenarTarefa, StatusDaTarefa
+from typing import List, Optional
+from sqlalchemy.orm import Session
+
+from contexto.tarefa.dominio.entidades.gerencia_de_tarefa import Tarefa
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import (
+    OrdenarTarefa,
+    StatusDaTarefa,
+)
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+
 from libs.dominio.repositorio import Repositorio
 from libs.tipos.paginacao import Paginacao
-from contexto.usuario.dominio.entidades.usuario import Usuario
 
 
 # TODO: criar abstract REPO de tarefa
-class RepositorioTarefas(Repositorio):
-
+class GerenciaDeTarefasRepo(Repositorio):
     def __init__(self, session: Session):
         self.session = session
 
@@ -47,7 +51,6 @@ class RepositorioTarefas(Repositorio):
     def buscar_todas_tarefas_por_id_do_usuario(
         self, id_usuario: UUID
     ) -> Optional[list[Tarefa]]:
-
         consulta = self.session.query(Tarefa)
         consulta = consulta.filter(Tarefa.id_usuario == id_usuario)
         tarefas: List[Tarefa] = consulta.all()
@@ -68,7 +71,7 @@ class RepositorioTarefas(Repositorio):
     ) -> Optional[list[Tarefa]]:
         consulta = self.session.query(Tarefa)
         consulta = consulta.filter(Tarefa.id_usuario == id_usuario)
-        consulta = consulta.order_by(Tarefa.vencimento)
+        consulta = consulta.order_by(Tarefa.data_de_fim)
         consulta = consulta.limit(10)
         tarefas: List[Tarefa] = consulta.all()
         return tarefas
@@ -78,7 +81,7 @@ class RepositorioTarefas(Repositorio):
     ) -> Optional[list[Tarefa]]:
         consulta = self.session.query(Tarefa)
         consulta = consulta.filter(Tarefa.id_usuario == id_usuario)
-        consulta = consulta.order_by(Tarefa.vencimento)
+        consulta = consulta.order_by(Tarefa.data_de_fim)
         consulta = consulta.limit(paginacao.page_size)
         consulta = consulta.offset(paginacao.offset())
         tarefas: List[Tarefa] = consulta.all()

@@ -1,11 +1,11 @@
 from typing import Optional
 
-from contexto.usuario.dominio.entidades.usuario import Usuario
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
-from contexto.usuario.erros.usuario import ErroAoObterUsuario
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
+from contexto.usuario.erros.conta_de_usuario import ErroAoObterUsuario
 from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
-from contexto.usuario.dominio.comandos.usuario import (
+from contexto.usuario.dominio.comandos.conta_de_usuario import (
     ListarUsuarios,
     ObterPerfilUsuario,
     ObterUsuario,

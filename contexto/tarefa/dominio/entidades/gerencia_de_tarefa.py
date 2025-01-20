@@ -1,8 +1,10 @@
+from uuid import UUID, uuid4
 from dataclasses import dataclass
 from datetime import datetime
+
 from libs.dominio.entidade import Entidade
-from uuid import UUID, uuid4
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import StatusDaTarefa
+
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import StatusDaTarefa
 
 
 @dataclass
@@ -52,7 +54,6 @@ class Tarefa(Entidade):
         prioridade: int = None,
         status: StatusDaTarefa = None,
     ):
-
         if titulo:
             self.titulo = titulo
         if descricao:

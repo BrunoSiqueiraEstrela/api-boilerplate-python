@@ -1,11 +1,12 @@
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import StatusDaTarefa
-from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from libs.database.config import REGISTRO_DOS_ORMS
+from uuid import uuid4
 from sqlalchemy.types import Uuid, String, DateTime, Enum, Integer
 from sqlalchemy.schema import Column, Table, ForeignKeyConstraint
 from sqlalchemy.sql import func
-from uuid import uuid4
 
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import StatusDaTarefa
+from contexto.tarefa.dominio.entidades.gerencia_de_tarefa import Tarefa
+
+from libs.database.config import REGISTRO_DOS_ORMS
 
 tabela_tarefa = Table(
     "Tarefa",
@@ -18,7 +19,7 @@ tabela_tarefa = Table(
     Column("data_de_fim", DateTime, nullable=False),
     Column("prioridade", Integer, nullable=False),
     Column("status", Enum(StatusDaTarefa), nullable=False),
-    Column("criado_em", DateTime, nullable=False, server_default=func.now()),
+    Column("criado_em", DateTime, nullable=False, server_default=func.now()),  #
     Column(
         "atualizado_em",
         DateTime,

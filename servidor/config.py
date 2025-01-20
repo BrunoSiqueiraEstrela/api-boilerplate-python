@@ -20,7 +20,7 @@ app.add_middleware(
 #    return RedirectResponse(url="/docs")
 
 
-## Cadastrar middleware
+# Cadastrar middleware
 @app.middleware("tempo_de_resposta")
 async def add_tempo_de_resposta(request: Request, call_next):
     timer_inicial = time.time()
@@ -31,10 +31,10 @@ async def add_tempo_de_resposta(request: Request, call_next):
 
 
 def registrar_rotas():
-    from contexto.usuario.pontos_de_entrada.usuario import rota as usuario
-    from contexto.usuario.pontos_de_entrada.usuario import auth
-    from contexto.usuario.pontos_de_entrada.usuario import admin
-    from contexto.tarefa.pontos_de_entrada.tarefa import rota as tarefa
+    from contexto.usuario.pontos_de_entrada.conta_de_usuario import rota as usuario
+    from contexto.usuario.pontos_de_entrada.conta_de_usuario import auth
+    from contexto.usuario.pontos_de_entrada.conta_de_usuario import admin
+    from contexto.tarefa.pontos_de_entrada.gerencia_de_tarefa import rota as tarefa
 
     app.include_router(auth)
     app.include_router(usuario)
@@ -45,20 +45,20 @@ def registrar_rotas():
 def registrar_eventos_e_comandos():
     barramento = Barramento()
 
-    from contexto.usuario.servicos.executores.usuario import (
+    from contexto.usuario.servicos.executores.conta_de_usuario import (
         criar_usuario,
         atualizar_usuario,
         deletar_usuario,
         login_de_usuario,
         atualizar_nivel_de_acesso,
     )
-    from contexto.usuario.servicos.visualizadores.usuario import (
+    from contexto.usuario.servicos.visualizadores.conta_de_usuario import (
         obter_usuario_por_id,
         listar_todos_usuarios,
         obter_usuario_logado,
     )
 
-    from contexto.usuario.dominio.comandos.usuario import (
+    from contexto.usuario.dominio.comandos.conta_de_usuario import (
         CriarUsuario,
         AtualizarUsuario,
         ObterUsuario,
@@ -69,7 +69,7 @@ def registrar_eventos_e_comandos():
         ObterPerfilUsuario,
         ObterUsuarioLogado,
     )
-    from contexto.tarefa.dominio.comandos.tarefa import (
+    from contexto.tarefa.dominio.comandos.gerencia_de_tarefa import (
         AtualizarTarefa,
         CriarTarefa,
         DeletarTarefa,
@@ -78,13 +78,13 @@ def registrar_eventos_e_comandos():
         BuscarTarefaPorIdDeTarefa,
     )
 
-    from contexto.tarefa.servicos.executores.tarefa import (
+    from contexto.tarefa.servicos.executores.gerencia_de_tarefa import (
         atualizar_tarefa,
         criar_tarefa,
         deletar_tarefa,
     )
 
-    from contexto.tarefa.servicos.visualizadores.tarefa import (
+    from contexto.tarefa.servicos.visualizadores.gerencia_de_tarefa import (
         obter_tarefas_por_status,
         obter_tarefas_por_id_do_usuario,
         obter_tarefas_por_id,

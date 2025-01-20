@@ -1,7 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter
 from fastapi.params import Depends
-from contexto.usuario.dominio.comandos.usuario import (
+from contexto.usuario.dominio.comandos.conta_de_usuario import (
     AtualizarNivelDeAcesso,
     CriarUsuario,
     LoginUsuario,
@@ -11,8 +11,8 @@ from contexto.usuario.dominio.comandos.usuario import (
     AtualizarUsuario,
     DeletarUsuario,
 )
-from contexto.usuario.dominio.entidades.usuario import Usuario
-from contexto.usuario.dominio.modelos.usuario import (
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.usuario.dominio.modelos.conta_de_usuario import (
     AtualizarUsuarioEntrada,
     CriarUsuarioEntrada,
     EntradaAtualizarNivelDeAcesso,

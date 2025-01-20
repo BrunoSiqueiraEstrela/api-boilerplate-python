@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4, UUID
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.dominio.entidade import Entidade
 from libs.fastapi.crypt import verificar_senha_hash
 

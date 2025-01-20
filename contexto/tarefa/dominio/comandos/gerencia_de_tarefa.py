@@ -1,7 +1,10 @@
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import OrdenarTarefa, StatusDaTarefa
+from contexto.tarefa.dominio.objeto_de_valor.gerencia_de_tarefa import (
+    OrdenarTarefa,
+    StatusDaTarefa,
+)
 from libs.dominio.comando import Comando
 
 
