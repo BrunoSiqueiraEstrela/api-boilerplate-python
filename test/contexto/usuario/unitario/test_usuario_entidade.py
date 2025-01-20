@@ -14,7 +14,7 @@ def test_criacao_de_usuario():
     assert usuario is not None
     assert usuario.nome == "João"
     assert usuario.email == "email@email.com"
-    assert usuario.senha == "123456"
+    assert usuario.verificar_senha("123456") is True
     assert usuario.nivel_de_acesso == NivelDeAcesso.USUARIO
 
 
