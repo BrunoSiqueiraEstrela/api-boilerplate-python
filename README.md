@@ -13,7 +13,7 @@ Projeto de API em python para servir como boiler-plate com boas praticas de codi
 
 ## TODO:
 
-- [ ] Refatorar testes unitarios
+- [x] Refatorar testes unitarios
 - [ ] Mudar nome do projeto no github
 - [ ] Adicionar sistema de envio de email
 - [ ] Adicionar evento de envio de email
@@ -21,10 +21,10 @@ Projeto de API em python para servir como boiler-plate com boas praticas de codi
 - [ ] Criar docker-compose para subir a aplicação  
 - [ ] Criar testes de integração e E2E
 - [ ] Aprimorar Github Actions e conectar com a maquina teste
-- [ ] Mudar camada de repositorio para usar interface entre a camada de dominio e infraestrutura
+- [x] Mudar camada de repositorio para usar interface entre a camada de dominio e infraestrutura
 - [ ] Implementar sistema de cache(Talvez muito complexo para um projeto já complexo demais até)
 - [ ] Implementar sistema de logs
-- [ ] Mudar querys para não exibir itens desativados
+- [x] Mudar querys para não exibir itens desativados
 - [ ] Implementar version ao realizar execuções de comandos no banco de dados
 - [ ] Fazer Front
 
