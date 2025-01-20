@@ -3,6 +3,7 @@ from jose import JWTError, jwt
 from fastapi import HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+# TODO: ADD ENVIRONMENT VARIABLES
 SECRET_KEY = os.environ.get("SECRET_KEY", "senha-secreta")
 ALGORITHM = os.environ.get("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE", 120))
@@ -27,7 +28,7 @@ class JWTBearer(HTTPBearer):
             if not dados_token:
                 raise HTTPException(status_code=403, detail="Invalid token")
 
-            from contexto.usuario.dominio.entidades.usuario import Usuario
+            from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
             from libs.database.config import conectar
 
             db = conectar()
