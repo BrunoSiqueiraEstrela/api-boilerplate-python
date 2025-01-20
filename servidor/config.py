@@ -1,6 +1,7 @@
 import time
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from libs.database.carregar_orm import carregar_tabelas
 from libs.dominio.barramento import Barramento
@@ -15,9 +16,9 @@ app.add_middleware(
 )
 
 
-# @app.get("/")
-# async def docs():
-#    return RedirectResponse(url="/docs")
+@app.get("/")
+async def docs():
+    return RedirectResponse(url="/docs")
 
 
 # Cadastrar middleware
