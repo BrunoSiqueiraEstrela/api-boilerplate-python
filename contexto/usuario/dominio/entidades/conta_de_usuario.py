@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4, UUID
+from passlib.context import CryptContext
+
 from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.dominio.entidade import Entidade
 from libs.fastapi.crypt import verificar_senha_hash
@@ -26,7 +28,7 @@ class Usuario(Entidade):
             id=uuid4(),
             nome=nome,
             email=email,
-            senha=senha,
+            senha=cls.gerar_hash_da_senha(senha=senha),
             nivel_de_acesso=nivel_de_acesso,
             ativo=True,
             criado_em=datetime.now(),
@@ -62,6 +64,15 @@ class Usuario(Entidade):
 
     def ativar(self):
         self.ativo = True
+
+    def verificar_senha_hash(self, senha_em_texto) -> bool:
+        bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        return bcrypt.verify(senha_em_texto, self.senha)
+
+    @staticmethod
+    def gerar_hash_da_senha(senha: str) -> str:
+        bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        return bcrypt.hash(senha)
 
     def __repr__(self) -> str:
         return f"Usuario<(id={self.id}),(nome={self.nome})>"

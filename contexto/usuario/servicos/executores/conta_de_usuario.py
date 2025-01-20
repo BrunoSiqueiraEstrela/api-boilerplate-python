@@ -15,6 +15,7 @@ from contexto.usuario.erros.conta_de_usuario import (
 )
 from contexto.usuario.repositorio.repo.conta_de_usuario import ContaDeUsuarioRepo
 from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
+
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
 
@@ -27,8 +28,6 @@ def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalhoAbastrato):
         senha=comando.senha,
         nivel_de_acesso=NivelDeAcesso.USUARIO,
     )
-
-    usuario.senha = gerar_hash_da_senha(usuario.senha)
 
     with uow:
         repositorio = ContaDeUsuarioRepo(uow.session)
