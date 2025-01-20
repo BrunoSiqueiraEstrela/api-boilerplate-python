@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from uuid import UUID
 from typing import List, Optional
 from sqlalchemy.orm import Session
@@ -13,8 +14,67 @@ from libs.dominio.repositorio import Repositorio
 from libs.tipos.paginacao import Paginacao
 
 
-# TODO: criar abstract REPO de tarefa
-class GerenciaDeTarefasRepo(Repositorio):
+class GerenciaDeTarefasRepoAbstrato(Repositorio, ABC):
+    @abstractmethod
+    def buscar_usuario_por_id(self, id_usuario: UUID) -> Optional[Usuario]:
+        pass
+
+    @abstractmethod
+    def adicionar_tarefa(self, tarefa: Tarefa) -> Optional[Tarefa]:
+        pass
+
+    @abstractmethod
+    def atualizar_tarefa(self, tarefa: Tarefa) -> Optional[Tarefa]:
+        pass
+
+    @abstractmethod
+    def deletar_tarefa(self, id_tarefa: UUID) -> Optional[UUID]:
+        pass
+
+    @abstractmethod
+    def buscar_tarefa_por_status(
+        self, id_usuario: UUID, status: list[StatusDaTarefa]
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_todas_tarefas_por_id_do_usuario(
+        self, id_usuario: UUID
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_tarefa_por_ordem_de_criacao(
+        self, id_usuario: UUID
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_tarefa_por_ordem_de_vencimento(
+        self, id_usuario: UUID
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_tarefa_por_ordem_de_vencimento_com_paginacao(
+        self, id_usuario: UUID, paginacao: Paginacao
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_por_id_filtrado_por_status_e_ordenado(
+        self, id_usuario: UUID, status: list[StatusDaTarefa], sort: OrdenarTarefa
+    ) -> Optional[list[Tarefa]]:
+        pass
+
+    @abstractmethod
+    def buscar_por_id_de_usuario_e_id_de_tarefa(
+        self, id_usuario: UUID, id_tarefa: UUID
+    ) -> Optional[Tarefa]:
+        pass
+
+
+class GerenciaDeTarefasRepo(GerenciaDeTarefasRepoAbstrato):
     def __init__(self, session: Session):
         self.session = session
 
