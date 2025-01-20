@@ -13,7 +13,7 @@ from contexto.usuario.erros.conta_de_usuario import (
     ErroAoCriarUsuario,
     ErroAoDeletarUsuario,
 )
-from contexto.usuario.repositorios.repo.usuario import RepositorioUsuario
+from contexto.usuario.repositorio.repo.conta_de_usuario import ContaDeUsuarioRepo
 from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalhoAbastrato
 from libs.fastapi.crypt import criar_token_de_acesso, gerar_hash_da_senha
@@ -31,7 +31,7 @@ def criar_usuario(comando: CriarUsuario, uow: UnidadeDeTrabalhoAbastrato):
     usuario.senha = gerar_hash_da_senha(usuario.senha)
 
     with uow:
-        repositorio = RepositorioUsuario(uow.session)
+        repositorio = ContaDeUsuarioRepo(uow.session)
 
         email_existe = repositorio.buscar_por_email(usuario.email)
 
@@ -49,7 +49,7 @@ def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalhoAbastrato
         comando.senha = gerar_hash_da_senha(comando.senha)
 
     with uow:
-        repositorio = RepositorioUsuario(uow.session)
+        repositorio = ContaDeUsuarioRepo(uow.session)
 
         usuario: Usuario | None = repositorio.buscar_por_id(comando.id)
 
@@ -71,7 +71,7 @@ def atualizar_usuario(comando: AtualizarUsuario, uow: UnidadeDeTrabalhoAbastrato
 # AUTH
 def login_de_usuario(comando: LoginUsuario, uow: UnidadeDeTrabalhoAbastrato):
     with uow:
-        repositorio = RepositorioUsuario(uow.session)
+        repositorio = ContaDeUsuarioRepo(uow.session)
 
         usuario = repositorio.buscar_por_email(comando.email)
 
@@ -91,7 +91,7 @@ def atualizar_nivel_de_acesso(
     comando: AtualizarNivelDeAcesso, uow: UnidadeDeTrabalhoAbastrato
 ):
     with uow:
-        repositorio = RepositorioUsuario(uow.session)
+        repositorio = ContaDeUsuarioRepo(uow.session)
 
         admin = repositorio.buscar_por_id(comando.id_admin)
 
@@ -122,7 +122,7 @@ def deletar_usuario(
     comando: DeletarUsuario, uow: UnidadeDeTrabalhoAbastrato
 ) -> Usuario:
     with uow:
-        repositorio = RepositorioUsuario(uow.session)
+        repositorio = ContaDeUsuarioRepo(uow.session)
 
         admin: Usuario | None = repositorio.buscar_por_id(comando.id_admin)
 
