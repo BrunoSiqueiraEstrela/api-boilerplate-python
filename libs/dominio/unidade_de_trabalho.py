@@ -4,8 +4,6 @@ from dataclasses import dataclass
 from sqlalchemy.orm.session import Session
 from sqlalchemy import text
 
-from libs.database.config import conectar
-
 
 @dataclass
 class UnidadeDeTrabalhoAbastrato(ABC):
@@ -31,6 +29,8 @@ class UnidadeDeTrabalho(UnidadeDeTrabalhoAbastrato):
     session: Optional[Session] = None
 
     def __enter__(self) -> Self:
+        from libs.database.config import conectar
+
         if not self.session:
             self.session = conectar()
 
