@@ -1,40 +1,11 @@
 from datetime import datetime, timedelta
-from unittest import TestCase
 from uuid import uuid4
-from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from contexto.tarefa.servicos.executores.tarefa import (
-    criar_tarefa,
-    atualizar_tarefa,
-    deletar_tarefa,
-)
 from freezegun import freeze_time
-from unittest.mock import MagicMock, Mock, patch
-from contexto.tarefa.dominio.comandos.tarefa import CriarTarefa
-from contexto.tarefa.dominio.objeto_de_valor.tarefa import StatusDaTarefa
-from libs.dominio.unidade_de_trabalho import UnidadeDeTrabalho
-from test.contexto.spy.uow import MockUoW
-from contexto.tarefa.dominio.comandos.tarefa import AtualizarTarefa, DeletarTarefa
-from contexto.tarefa.erros.tarefa import ErroAoAtualizarTarefa, ErroAoDeletarTarefa
-from contexto.tarefa.repositorios.repo.tarefa import RepositorioTarefas
-import pytest
-from datetime import datetime, timedelta
-from uuid import uuid4
-from unittest.mock import MagicMock, patch
-from contexto.tarefa.dominio.entidades.tarefa import Tarefa
-from contexto.tarefa.servicos.executores.tarefa import (
-    criar_tarefa,
-    atualizar_tarefa,
-    deletar_tarefa,
-)
-from contexto.tarefa.dominio.comandos.tarefa import (
-    CriarTarefa,
-    AtualizarTarefa,
-    DeletarTarefa,
-)
+
+from contexto.tarefa.dominio.entidades.gerencia_de_tarefa import Tarefa
 
 
 def test_criar_tarefa():
-
     tarefa: Tarefa = Tarefa.criar(
         id_usuario=uuid4(),
         titulo="titulo",
@@ -122,18 +93,17 @@ def test_atualizar_um_campo_por_vez():
 
 
 def test_tarefa_esta_atrasada():
+    hora_inicio = datetime.now() - timedelta(hours=8)
+    hora_fim = datetime.now() - timedelta(hours=4)
+    hora_agora = datetime.now()
 
-    HORA_INICIO = datetime.now() - timedelta(hours=8)
-    HORA_FIM = datetime.now() - timedelta(hours=4)
-    HORA_AGORA = datetime.now()
-
-    with freeze_time(HORA_AGORA):
+    with freeze_time(hora_agora):
         tarefa: Tarefa = Tarefa.criar(
             id_usuario=uuid4(),
             titulo="titulo",
             descricao="descricao",
-            data_de_inicio=HORA_INICIO,
-            data_de_fim=HORA_FIM,
+            data_de_inicio=hora_inicio,
+            data_de_fim=hora_fim,
             prioridade=1,
             status="PENDENTE",
         )
@@ -141,18 +111,17 @@ def test_tarefa_esta_atrasada():
 
 
 def test_tarefa_nao_esta_atrasada():
+    hora_inicio = datetime.now() - timedelta(hours=8)
+    hora_fim = datetime.now() - timedelta(hours=4)
+    hora_agora = datetime.now() - timedelta(hours=6)
 
-    HORA_INICIO = datetime.now() - timedelta(hours=8)
-    HORA_FIM = datetime.now() - timedelta(hours=4)
-    HORA_AGORA = datetime.now() - timedelta(hours=6)
-
-    with freeze_time(HORA_AGORA):
+    with freeze_time(hora_agora):
         tarefa: Tarefa = Tarefa.criar(
             id_usuario=uuid4(),
             titulo="titulo",
             descricao="descricao",
-            data_de_inicio=HORA_INICIO,
-            data_de_fim=HORA_FIM,
+            data_de_inicio=hora_inicio,
+            data_de_fim=hora_fim,
             prioridade=1,
             status="PENDENTE",
         )

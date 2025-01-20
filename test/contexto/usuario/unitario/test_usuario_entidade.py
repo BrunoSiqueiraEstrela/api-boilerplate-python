@@ -1,10 +1,9 @@
-from contexto.usuario.dominio.entidades.usuario import Usuario
-from contexto.usuario.dominio.objeto_de_valor.usuario import NivelDeAcesso
+from contexto.usuario.dominio.entidades.conta_de_usuario import Usuario
+from contexto.usuario.dominio.objeto_de_valor.conta_de_usuario import NivelDeAcesso
 
 
 # primeiro teste
 def test_criacao_de_usuario():
-
     usuario = Usuario.criar(
         nome="João",
         email="email@email.com",
@@ -20,7 +19,6 @@ def test_criacao_de_usuario():
 
 
 def test_atualizacao_de_usuario():
-
     usuario = Usuario.criar(
         nome="João",
         email="email@email",
@@ -47,7 +45,6 @@ def test_autualizacao_de_usuario_com_nivel_de_acesso_invalido():
 
 
 def test_deletar_usuario():
-
     usuario = Usuario.criar(
         nome="João",
         email="email@email",
