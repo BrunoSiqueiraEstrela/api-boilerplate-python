@@ -1,8 +1,8 @@
-import os
 import uvicorn
+from libs.variaveis.gerenciador_de_env import ENVS
 
 if __name__ == "__main__":
-    HOST = os.environ.get("HOST", "127.0.0.1")
-    # PORT: int = os.environ.get("PORT", 8080)
+    HOST: str = ENVS.HOST
+    PORT: int = ENVS.PORT
 
-    uvicorn.run("servidor.config:app", host=HOST, port=8888, reload=True)
+    uvicorn.run("servidor.config:app", host=HOST, port=PORT, reload=True)
