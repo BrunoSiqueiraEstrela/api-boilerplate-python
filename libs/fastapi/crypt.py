@@ -9,9 +9,9 @@ from jose import jwt
 from passlib.context import CryptContext
 
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "senha-secreta")
-ALGORITHM = os.environ.get("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE", 120))
+SECRET_KEY = os.environ.get("SECRET_KEY")
+ALGORITHM = os.environ.get("ALGORITHM")
+
 
 bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -52,13 +52,12 @@ def obter_indentificador(token: str):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-
         dados = decodificar_token(token)
         identificador: str = dados.get("sub")
 
         if identificador is None:
             raise credentials_exception
 
-    except jwt.PyJWTError:
+    except jwt.JWTError:
         raise credentials_exception
     return identificador

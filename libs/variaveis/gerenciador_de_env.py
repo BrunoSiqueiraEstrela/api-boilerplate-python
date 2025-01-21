@@ -28,6 +28,11 @@ class GerenciadorENV(BaseSettings):
     DB_PASSWORD: Final[str] = Field(env="DB_PASSWORD")  # Usado
     DB_DATABASE: Final[str] = Field(env="DB_DATABASE")  # Usado
 
+    #
+    SECRET_KEY: Final[str] = Field(env="SECRET_KEY")
+    ALGORITHM: Final[str] = Field(env="ALGORITHM")
+    ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = Field(env="ACCESS_TOKEN_EXPIRE_MINUTES")
+
     # VIRTUAIS
     @property
     def DB_STRING_CONNECTION(self) -> str:
