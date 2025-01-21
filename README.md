@@ -65,6 +65,10 @@ poetry run uvicorn app.main:app --reload
 poetry run pytest
 ```
 
+## Inspirações:
+
+CosmicPython: https://www.cosmicpython.com/book/chapter_01_domain_model.html
+
 ## Licença
 
 * TODO
