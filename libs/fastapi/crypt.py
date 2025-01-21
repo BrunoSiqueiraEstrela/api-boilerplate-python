@@ -8,11 +8,6 @@ from fastapi import HTTPException
 from jose import jwt
 from passlib.context import CryptContext
 
-
-SECRET_KEY = os.environ.get("SECRET_KEY")
-ALGORITHM = os.environ.get("ALGORITHM")
-
-
 bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -25,6 +20,8 @@ def gerar_hash_da_senha(senha: str) -> str:
 
 
 def criar_token_de_acesso(data: dict, expires_delta: Optional[timedelta] = None):
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    ALGORITHM = os.environ.get("ALGORITHM")
     para_codificar = data.copy()
 
     for chave, valor in para_codificar.items():
@@ -42,6 +39,8 @@ def criar_token_de_acesso(data: dict, expires_delta: Optional[timedelta] = None)
 
 
 def decodificar_token(token):
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    ALGORITHM = os.environ.get("ALGORITHM")
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
 

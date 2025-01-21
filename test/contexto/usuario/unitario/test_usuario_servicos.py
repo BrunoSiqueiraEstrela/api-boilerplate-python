@@ -1,3 +1,4 @@
+import os
 from uuid import uuid4
 from unittest.mock import patch
 
@@ -153,6 +154,10 @@ def test_login_de_usuario():
     bus = Barramento()
 
     comando = LoginUsuario(email="email@example.com", senha="senha")
+
+    os.environ["SECRET_KEY"] = "SECRET_TEST_KEY"
+    os.environ["ALGORITHM"] = "HS256"
+    os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"] = "30"
 
     with patch(
         "contexto.usuario.servicos.executores.conta_de_usuario.ContaDeUsuarioRepo",
