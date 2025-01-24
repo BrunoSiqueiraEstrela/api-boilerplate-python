@@ -69,7 +69,3 @@ poetry run pytest
 
 CosmicPython: https://www.cosmicpython.com/book/chapter_01_domain_model.html
 
-## Licença
-
-* TODO
-* mas pode forkar a vontade
