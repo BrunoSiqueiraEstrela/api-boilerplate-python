@@ -13,36 +13,36 @@ Projeto de API em python para servir como boiler-plate com boas praticas de codi
 
 ## TodoList:
 
-# MODULOS
+#### MODULOS
 
 - [ ] Desenvolver modulo de Logger
 - [ ] Adicionar sistema de envio de email
 - [ ] Adicionar evento de envio de email
 - [ ] Implementar sistema de cache(Talvez muito complexo para um projeto já complexo demais até)
 
-# AUTH
+#### AUTH
 - [ ] Sistema de confirmação de email
 - [ ] Sistema de refresh do token
 
- # Docker
+#### Docker
 - [ ] Criar Dockerfile para containirizar a aplicação  
 - [ ] Criar docker-compose para subir a aplicação  
 
-# Arquitetura
+#### Arquitetura
 - [x] Mudar camada de repositorio para usar interface entre a camada de dominio e infraestrutura
 - [x] Refatorar testes unitarios
 - [ ] Implementar um Evento(Está limitado pela regra de negocio basica)
 
-# Regra de negocios
+#### Regra de negocios
 - [ ] Implementar uma regra de negocio mais complexa
 - [x] Mudar querys para não exibir itens desativados
 
-# CL/CD
+#### CL/CD
 - [ ] Add função para subir alterações na maquina de teste
 - [ ] Criar testes de integração e E2E
 - [ ] Implementar version ao realizar execuções de comandos no banco de dados
 
-# Front
+#### Front
 - [ ] Fazer Front
 
 ## Requisitos
