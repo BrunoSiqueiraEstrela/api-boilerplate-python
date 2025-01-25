@@ -11,21 +11,38 @@ Projeto de API em python para servir como boiler-plate com boas praticas de codi
 - Testes: Unitarios, Integração, E2E
 - CI/CD: Github Actions
 
-## TODO:
+## TodoList:
 
-- [x] Refatorar testes unitarios
-- [ ] Mudar nome do projeto no github
+# MODULOS
+
+- [ ] Desenvolver modulo de Logger
 - [ ] Adicionar sistema de envio de email
 - [ ] Adicionar evento de envio de email
+- [ ] Implementar sistema de cache(Talvez muito complexo para um projeto já complexo demais até)
+
+# AUTH
+- [ ] Sistema de confirmação de email
+- [ ] Sistema de refresh do token
+
+ # Docker
 - [ ] Criar Dockerfile para containirizar a aplicação  
 - [ ] Criar docker-compose para subir a aplicação  
-- [ ] Criar testes de integração e E2E
-- [ ] Aprimorar Github Actions e conectar com a maquina teste
+
+# Arquitetura
 - [x] Mudar camada de repositorio para usar interface entre a camada de dominio e infraestrutura
-- [ ] Implementar sistema de cache(Talvez muito complexo para um projeto já complexo demais até)
-- [ ] Implementar sistema de logs
+- [x] Refatorar testes unitarios
+- [ ] Implementar um Evento(Está limitado pela regra de negocio basica)
+
+# Regra de negocios
+- [ ] Implementar uma regra de negocio mais complexa
 - [x] Mudar querys para não exibir itens desativados
+
+# CL/CD
+- [ ] Add função para subir alterações na maquina de teste
+- [ ] Criar testes de integração e E2E
 - [ ] Implementar version ao realizar execuções de comandos no banco de dados
+
+# Front
 - [ ] Fazer Front
 
 ## Requisitos
